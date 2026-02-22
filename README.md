@@ -116,13 +116,10 @@ The site is served from the `main` branch root via GitHub Pages.
 
 ---
 
-## Authors
+## Author
 
-- Aditya Kumar Kapar (RA2311042030002)
-- Shaunak Borker (RA2311042030003)
-- Milan Kuiry (RA2311042030008)
-- Harsh Garg (RA2311042030010)
-- Vasu Goel (RA2311042030012)
+- Aditya Kumar Kapar
+
 
 ---
 
