@@ -1,6 +1,6 @@
 # Vending Machine Extended FSM Simulator
 
-A browser-based simulator that demonstrates **Finite State Machine (FSM) principles** through an interactive vending machine. Built with plain HTML, CSS (Tailwind), and vanilla JavaScript — no build step required.
+A browser based simulator that demonstrates **Finite State Machine (FSM) principles** through an interactive vending machine. Built with plain HTML, CSS (Tailwind), and vanilla JavaScript — no build step required.
 
 **🔴 Live Demo:** [https://ak4752-a.github.io/Vending-Machine-Extended-FSM-Simulator/](https://ak4752-a.github.io/Vending-Machine-Extended-FSM-Simulator/)
 
