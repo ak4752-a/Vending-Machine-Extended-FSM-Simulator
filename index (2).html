@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vending Machine FSM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Use Inter for general UI, Roboto Mono for machine-like text */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Applied to all technical text for machine aesthetic */
+        .tm-font, #vm-display, #automata-current-state, #automata-last-transition, table {
+            font-family: 'Roboto Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen p-4 tm-font">
+
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-bold text-center mb-6 text-red-400">Vending Machine FSM Principles Simulator</h1>
+        
+        <div class="flex flex-col md:flex-row gap-6">
+
+            <div class="w-full md:w-1/2 bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-center mb-2 text-red-300">Vending Machine</h2>
+                    <div id="vm-display" class="w-full bg-gray-900 border-2 border-gray-700 rounded-lg p-4 text-center text-2xl text-green-400 h-16 flex items-center justify-center">
+                        Insert Coin
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-300">Select Item (Prices in ₹)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button id="item-soda" class="p-4 bg-blue-600 hover:bg-blue-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Soda (₹30)
+                        </button>
+                        <button id="item-chips" class="p-4 bg-green-600 hover:bg-green-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Chips (₹20)
+                        </button>
+                        <button id="item-candy" class="p-4 bg-yellow-600 hover:bg-yellow-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Candy (₹10)
+                        </button>
+                        <button id="item-samosa" class="p-4 bg-orange-600 hover:bg-orange-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Samosa (₹15)
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h3 class="text-lg font-semibold mb-2 text-gray-300">Insert Money (₹)</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button id="insert-5" class="p-4 bg-gray-600 hover:bg-gray-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Insert ₹5
+                        </button>
+                        <button id="insert-10" class="p-4 bg-gray-600 hover:bg-gray-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Insert ₹10
+                        </button>
+                        <button id="insert-20" class="p-4 bg-gray-600 hover:bg-gray-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Insert ₹20
+                        </button>
+                        <button id="insert-50" class="p-4 bg-gray-600 hover:bg-gray-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Insert ₹50
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <div class="flex gap-4 mb-4">
+                        <button id="cancel" class="w-1/3 p-4 bg-red-600 hover:bg-red-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Cancel
+                        </button>
+                        <button id="collect-items" class="w-1/3 p-4 bg-green-600 hover:bg-green-700 disabled:opacity-50 rounded-lg font-semibold shadow-lg transition duration-150 transform hover:scale-105" disabled>
+                            Collect &amp; Get Change
+                        </button>
+                        <button id="reset-machine" class="w-1/3 p-4 bg-gray-600 hover:bg-gray-700 rounded-lg shadow-lg transform hover:scale-105 transition">
+                            Master Reset
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mb-2 text-gray-300">Dispenser</h3>
+                    <div id="dispenser" class="w-full h-32 bg-gray-900 border-2 border-gray-700 rounded-lg p-2 overflow-y-auto dispenser-item text-gray-400">
+                        </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 bg-gray-800 p-6 rounded-xl shadow-2xl border border-gray-700">
+                <h2 class="text-xl font-bold text-center mb-2 text-red-300">FSM Automata Principles</h2>
+                
+                <div class="p-4 mb-4 bg-gray-900 rounded-lg border-2 border-gray-700">
+                    <p class="text-lg text-gray-300 mb-1">Current State:</p>
+                    <p id="automata-current-state" class="text-2xl font-bold text-green-400">q0 (Idle / ₹0)</p>
+                    
+                    <hr class="border-gray-700 my-2">
+
+                    <p class="text-lg text-gray-300 mb-1">Last Transition:</p>
+                    <p id="automata-last-transition" class="text-lg text-yellow-400 break-words h-8">
+                        -
+                    </p>
+                </div>
+
+                <h3 class="text-lg font-semibold mt-4 mb-2 text-gray-300">Transaction History (Transition Log)</h3>
+                <div id="transition-history" class="w-full h-40 bg-gray-900 border-2 border-gray-700 rounded-lg p-2 overflow-y-auto text-sm text-gray-400">
+                    </div>
+
+                <h3 class="text-lg font-semibold mt-6 mb-2 text-gray-300">Formal FSM Definition ($M = (Q, \Sigma, \delta, q_0, F)$)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-300">
+                        <thead class="text-xs text-red-300 uppercase bg-gray-700">
+                            <tr>
+                                <th class="p-2">Symbol</th>
+                                <th class="p-2">Tuple Name</th>
+                                <th class="p-2">Value Example</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-700">
+                            <tr class="bg-gray-800">
+                                <td class="p-2 font-bold">$Q$</td>
+                                <td class="p-2">Set of States</td>
+                                <td class="p-2 font-mono">{ q0, q_credited }</td>
+                            </tr>
+                            <tr class="bg-gray-800">
+                                <td class="p-2 font-bold">$\Sigma$</td>
+                                <td class="p-2">Input Alphabet</td>
+                                <td class="p-2 font-mono">{ insert_5, ..., select_soda, ..., cancel }</td>
+                            </tr>
+                            <tr class="bg-gray-800">
+                                <td class="p-2 font-bold">$\delta$</td>
+                                <td class="p-2">Transition Function</td>
+                                <td class="p-2 font-mono">(e.g., $\delta$(q0, insert_5) &rarr; q_credited)</td>
+                            </tr>
+                            <tr class="bg-gray-800">
+                                <td class="p-2 font-bold">$q_0$</td>
+                                <td class="p-2">The Start State</td>
+                                <td class="p-2 font-mono">q0</td>
+                            </tr>
+                            <tr class="bg-gray-800">
+                                <td class="p-2 font-bold">$F$</td>
+                                <td class="p-2">Set of Final States</td>
+                                <td class="p-2 font-mono">{ q0 } (Success/Reset)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="text-center p-6 mt-8 text-gray-500 text-xs tm-font">
+        <p class="mb-1">Created by:</p>
+        <p>Aditya Kumar Kapar (RA2311042030002) &bull; Shaunak Borker (RA2311042030003)</p>
+        <p>Milan Kuiry (RA2311042030008) &bull; Harsh Garg (RA2311042030010) &bull; Vasu Goel (RA2311042030012)</p>
+    </footer>
+
+    <script>
+        // --- FSM State ---
+        let currentState = 'q0'; // q0, q_credited
+        let currentAmount = 0;
+        let itemCart = []; // To hold items before collection
+        const itemPrices = {
+            'Soda': 30,
+            'Chips': 20,
+            'Candy': 10,
+            'Samosa': 15
+        };
+
+        // --- Element References ---
+        const vmDisplay = document.getElementById('vm-display');
+        const dispenser = document.getElementById('dispenser');
+        const stateDisplay = document.getElementById('automata-current-state');
+        const transitionDisplay = document.getElementById('automata-last-transition');
+        const transitionHistory = document.getElementById('transition-history');
+        
+        // Removed stateBoxes and visual logic
+        const elements = { 
+            collectButton: document.getElementById('collect-items')
+        };
+
+
+        // --- FSM Logic ---
+        
+        function handleInput(inputType, value) {
+            let previousState = currentState;
+            let transitionRule = '';
+
+            switch (currentState) {
+                case 'q0':
+                    if (inputType === 'coin') {
+                        currentAmount += value;
+                        currentState = 'q_credited';
+                        transitionRule = `(q0, ₹${value}) -> q_credited`;
+                    } else if (inputType === 'select') {
+                        updateDisplay(`Need ₹${itemPrices[value]}`);
+                        transitionRule = `(q0, Select ${value}) -> q0 (No Credit)`;
+                    } else if (inputType === 'cancel' || inputType === 'collect') {
+                        transitionRule = `(q0, ${inputType}) -> q0 (No Action)`;
+                    }
+                    break;
+                
+                case 'q_credited':
+                    if (inputType === 'coin') {
+                        currentAmount += value;
+                        transitionRule = `(q_credited, ₹${value}) -> q_credited`;
+                    } else if (inputType === 'select') {
+                        const price = itemPrices[value];
+                        if (currentAmount >= price) {
+                            itemCart.push(value);
+                            currentAmount -= price;
+                            transitionRule = `(q_credited, Select ${value}) -> q_credited (Item Added)`;
+                            updateDisplay(`Added ${value}. ₹${currentAmount} left.`);
+                        } else {
+                            updateDisplay(`Need ₹${price - currentAmount} more`);
+                            transitionRule = `(q_credited, Select ${value}) -> q_credited (Insufficient funds)`;
+                        }
+                    } else if (inputType === 'cancel') {
+                        const totalSpent = itemCart.reduce((acc, itemName) => acc + itemPrices[itemName], 0);
+                        const returnedAmount = currentAmount + totalSpent;
+                        if (returnedAmount > 0) {
+                            returnChange(returnedAmount);
+                        }
+                        currentState = 'q0';
+                        currentAmount = 0;
+                        itemCart = []; 
+                        transitionRule = `(q_credited, Cancel) -> q0 (Return ₹${returnedAmount})`;
+                    } else if (inputType === 'collect') {
+                        let change = currentAmount;
+                        vendAllItems();
+                        
+                        if (change > 0) {
+                            returnChange(change);
+                        }
+                        currentState = 'q0';
+                        currentAmount = 0;
+                        itemCart = []; 
+                        transitionRule = `(q_credited, Collect) -> q0 (Vend & Return ₹${change})`;
+                    }
+                    break;
+            }
+            
+            // Update all UIs
+            updateAutomataUI(previousState, transitionRule);
+            updateDisplay();
+        }
+
+        // --- UI Update Functions ---
+        
+        function updateDisplay(message = null) {
+            if (message) {
+                vmDisplay.textContent = message;
+                setTimeout(updateDisplay, 2000);
+                return;
+            }
+            
+            if (currentState === 'q0') {
+                vmDisplay.textContent = "Insert Coin";
+            } else if (currentState === 'q_credited') {
+                vmDisplay.textContent = `₹${currentAmount} - Select Item (${itemCart.length} in cart)`;
+            }
+            
+            elements.collectButton.disabled = (currentState === 'q0'); 
+        }
+        
+        function updateAutomataUI(previousState, transitionRule) {
+            
+            let stateText = '';
+            if (currentState === 'q0') stateText = 'q0 (Idle / ₹0)';
+            else if (currentState === 'q_credited') stateText = `q_credited (Has Credit / ₹${currentAmount})`;
+            
+            stateDisplay.textContent = stateText;
+            
+            transitionDisplay.textContent = transitionRule;
+            
+            // Add to transaction history (Log)
+            if (transitionRule !== '-' && transitionRule.trim() !== '(Master Reset) -> q0') {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'p-1 border-b border-gray-800';
+                historyItem.textContent = transitionRule;
+                transitionHistory.appendChild(historyItem);
+                transitionHistory.scrollTop = transitionHistory.scrollHeight;
+            }
+            
+            // NOTE: Visual state boxes are removed, so no class updates needed here.
+        }
+
+        // --- Helper Functions ---
+        function vendAllItems() {
+            if (itemCart.length === 0) {
+                updateDisplay("No items to vend.");
+                return;
+            }
+            
+            itemCart.forEach(itemName => {
+                const item = document.createElement('div');
+                item.className = 'bg-blue-700 p-1 rounded mb-1 text-sm text-blue-100';
+                item.textContent = `Vended: ${itemName}`;
+                dispenser.appendChild(item);
+            });
+            
+            dispenser.scrollTop = dispenser.scrollHeight;
+            updateDisplay(`Vending ${itemCart.length} item(s)...`);
+        }
+
+        function returnChange(amount) {
+            if (amount <= 0) return;
+            const item = document.createElement('div');
+            item.className = 'bg-yellow-700 p-1 rounded mb-1 text-sm text-yellow-100';
+            item.textContent = `Returned Change: ₹${amount}`;
+            dispenser.appendChild(item);
+            dispenser.scrollTop = dispenser.scrollHeight;
+            updateDisplay(`Returning ₹${amount} change...`);
+        }
+
+        // --- Reset Function ---
+        function masterReset() {
+            let changeOnReset = currentAmount + itemCart.reduce((acc, itemName) => acc + itemPrices[itemName], 0);
+            
+            if (changeOnReset > 0) {
+                returnChange(changeOnReset);
+            }
+
+            // Delaying clearing the dispenser so change message is visible for a moment
+            setTimeout(() => {
+                dispenser.innerHTML = '';
+            }, 1000);
+            
+            transitionHistory.innerHTML = ''; 
+            
+            currentState = 'q0'; 
+            currentAmount = 0;
+            itemCart = []; 
+
+            updateDisplay(`Machine Reset.`);
+            updateAutomataUI('q_credited', '(Master Reset) -> q0');
+        }
+
+        // --- Event Listeners ---
+        document.getElementById('insert-5').addEventListener('click', () => handleInput('coin', 5));
+        document.getElementById('insert-10').addEventListener('click', () => handleInput('coin', 10));
+        document.getElementById('insert-20').addEventListener('click', () => handleInput('coin', 20));
+        document.getElementById('insert-50').addEventListener('click', () => handleInput('coin', 50));
+        
+        document.getElementById('cancel').addEventListener('click', () => handleInput('cancel', null));
+        document.getElementById('collect-items').addEventListener('click', () => handleInput('collect', null)); 
+        document.getElementById('reset-machine').addEventListener('click', masterReset);
+        
+        document.getElementById('item-soda').addEventListener('click', () => handleInput('select', 'Soda'));
+        document.getElementById('item-chips').addEventListener('click', () => handleInput('select', 'Chips'));
+        document.getElementById('item-candy').addEventListener('click', () => handleInput('select', 'Candy'));
+        document.getElementById('item-samosa').addEventListener('click', () => handleInput('select', 'Samosa'));
+
+        // Initial setup
+        updateAutomataUI(null, '-');
+        updateDisplay();
+    </script>
+</body>
+</html>
