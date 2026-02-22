@@ -1,0 +1,20 @@
+name: HTML Validation
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-html:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate index.html with html5validator
+        run: |
+          pip install html5validator --quiet
+          html5validator --root . --also-check-css --log WARNING index.html
