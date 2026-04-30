@@ -22,9 +22,6 @@ A browser based simulator that demonstrates **Finite State Machine (FSM) princip
 
 ## Screenshots
 
-> Replace the placeholder images below by uploading real screenshots to the `screenshots/` folder.  
-> **Guidelines:** recommended size ~1280×720 px, filenames lowercase with hyphens, PNG format preferred, keep file sizes reasonable (compress if > 500 KB).
-
 ![Home](screenshots/home.png)
 ![Credit and cart](screenshots/credit-and-cart.png)
 ![Transition log](screenshots/transition-log.png)
